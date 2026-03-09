@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#101418" />
+  <meta name="description" content="Safe Camera PWA — камера без EXIF-метаданных." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Safe Camera</title>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">PWA · Safe Camera</p>
+        <h1>Камера без EXIF</h1>
+      </div>
+      <button id="installBtn" class="ghost hidden" type="button">Установить</button>
+    </header>
+
+    <section class="card controls-grid">
+      <label class="field">
+        <span>Камера</span>
+        <select id="cameraSelect"></select>
+      </label>
+
+      <label class="field">
+        <span>Формат</span>
+        <select id="formatSelect">
+          <option value="image/jpeg">JPEG</option>
+          <option value="image/webp">WEBP</option>
+          <option value="image/png">PNG</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Качество</span>
+        <input id="qualityRange" type="range" min="0.6" max="1" step="0.02" value="0.92" />
+        <small id="qualityValue">0.92</small>
+      </label>
+
+      <div class="toggles">
+        <label class="toggle">
+          <input id="mirrorPreview" type="checkbox" />
+          <span>Зеркалить превью</span>
+        </label>
+        <label class="toggle">
+          <input id="fillFrame" type="checkbox" checked />
+          <span>Заполнять кадр</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="camera-stage card">
+      <div class="stage-frame" id="stageFrame">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas" class="hidden"></canvas>
+        <div id="statusBadge" class="status-badge">Камера не запущена</div>
+      </div>
+
+      <div class="actions">
+        <button id="startBtn" type="button">Запустить камеру</button>
+        <button id="switchBtn" type="button" class="ghost">Сменить камеру</button>
+        <button id="captureBtn" type="button" class="accent" disabled>Сфоткать</button>
+        <button id="stopBtn" type="button" class="ghost" disabled>Остановить</button>
+      </div>
+    </section>
+
+    <section class="card output-card">
+      <div class="output-head">
+        <div>
+          <p class="eyebrow">Результат</p>
+          <h2>Пересобранный снимок</h2>
+        </div>
+        <div id="metaState" class="meta-state">Нет снимка</div>
+      </div>
+
+      <div class="preview-wrap">
+        <img id="photoPreview" alt="Снятое фото" class="hidden" />
+        <div id="emptyState" class="empty-state">Сделай снимок — здесь появится экспортированный файл без исходных метаданных EXIF.</div>
+      </div>
+
+      <div id="fileInfo" class="file-info hidden"></div>
+
+      <div class="actions">
+        <a id="downloadBtn" class="button-link ghost hidden" download="safe-camera.jpg">Скачать</a>
+        <button id="clearBtn" type="button" class="ghost" disabled>Очистить</button>
+      </div>
+    </section>
+
+    <section class="card notes">
+      <h3>Что делает приложение</h3>
+      <p>
+        Снимок берётся не как исходный файл камеры, а как кадр из видеопотока, который заново экспортируется через canvas.
+        Это обычно убирает EXIF-блоки вроде геолокации, модели телефона и прочих полей.
+      </p>
+      <p>
+        Это не делает пользователя полностью анонимным: при загрузке на сервер всё равно останутся сетевые и поведенческие следы.
+      </p>
+    </section>
+  </main>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
